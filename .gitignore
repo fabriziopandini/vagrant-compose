@@ -14,3 +14,6 @@ Gemfile.lock
 # Vagrant
 .vagrant
 Vagrantfile
+
+# Test
+provisioning
