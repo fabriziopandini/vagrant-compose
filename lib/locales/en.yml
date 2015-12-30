@@ -1,0 +1,37 @@
+en:
+  vagrant_compose:
+    already_status: |-
+      The machine is already %{status}.
+    errors:
+      initialize_error: |-
+        Error executing initialize code for cluster => %{cluster_name}.
+        The error message is shown below:
+        %{message}
+
+      attribute_expression_error: |-
+        Error generating attribute => %{attribute} for node => %{node_index} in group  => %{node_group_name}.
+        The error message is shown below:
+        %{message}
+
+        Attribute expression expected to be a literal or a code block returning a literal (see documentation).
+
+      context_var_expression_error: |-
+        Error generating ansible context vars for ansible_group => %{ansible_group} 
+        The error message is shown below:
+        %{message}
+
+        Ansible context var expression expected to be a Hash literal or a code block returning an Hash literal (see documentation).
+
+      group_var_expression_error: |-
+        Error generating ansible group vars for ansible_group => %{ansible_group} 
+        The error message is shown below:
+        %{message}
+
+        Ansible group var expression expected to be a Hash literal or a code block returning an Hash literal (see documentation).
+
+      host_var_expression_error: |-
+        Error generating ansible host vars for host => %{host} in ansible_group => %{ansible_group} 
+        The error message is shown below:
+        %{message}
+
+        Ansible host var expression expected to be a Hash literal or a code block returning an Hash literal (see documentation).
