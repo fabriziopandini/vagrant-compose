@@ -29,7 +29,6 @@ module VagrantPlugins
  	  	puts "==> cluster #{@cluster.name} with #{nodes.size} nodes" 
  	  	@nodes.each do |node|
 		   puts "        #{node.boxname} accessible as #{node.fqdn} #{node.aliases} #{node.ip} => [#{node.box}, #{node.cpus} cpus, #{node.memory} memory]"       
-
  	  	end
     	puts "    ansible_groups filtered by #{@cluster.multimachine_filter}" if not @cluster.multimachine_filter.empty?
  	  end

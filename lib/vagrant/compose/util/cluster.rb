@@ -14,7 +14,7 @@ class Cluster
 
   # Costruttore di una istanza di cluster.
   def initialize(name)
-    @group_uid             = 0
+    @group_index             = 0
     @node_groups           = {}
     @ansible_context_vars  = {}
     @ansible_group_vars    = {}
@@ -32,23 +32,23 @@ class Cluster
   #
   # Oltre alla creazione dei nodi, il metodo prevede anche l'esecuzione di un blocco di codice per
   # la configurazione del gruppo di nodi stesso.
-  def nodes(name, &block)
+  def nodes(instances, name, &block)
     raise RuntimeError, "Nodes #{name} already exists in this cluster." unless not @node_groups.has_key?(name)
 
-    @node_groups[name] = NodeGroup.new(@group_uid, name)
+    @node_groups[name] = NodeGroup.new(@group_index, instances, name)
     @node_groups[name].box        = @box 
-    @node_groups[name].boxname    = lambda { |group_uid, group_name, node_index| return "#{group_name}#{node_index + 1}" }
-    @node_groups[name].hostname   = lambda { |group_uid, group_name, node_index| return "#{group_name}#{node_index + 1}" }
+    @node_groups[name].boxname    = lambda { |group_index, group_name, node_index| return "#{group_name}#{node_index + 1}" }
+    @node_groups[name].hostname   = lambda { |group_index, group_name, node_index| return "#{group_name}#{node_index + 1}" }
     @node_groups[name].aliases    = []
-    @node_groups[name].ip         = lambda { |group_uid, group_name, node_index| return "172.31.#{group_uid}.#{100 + node_index + 1}" }
+    @node_groups[name].ip         = lambda { |group_index, group_name, node_index| return "172.31.#{group_index}.#{100 + node_index + 1}" }
     @node_groups[name].cpus       = 1
     @node_groups[name].memory     = 256
     @node_groups[name].ansible_groups = []
     @node_groups[name].attributes = {}
 
-    @group_uid += 1 
+    @group_index += 1 
 
-    block.call(@node_groups[name])
+    block.call(@node_groups[name]) if block_given?
   end 
 
   # Prepara il provisioning del cluster
@@ -201,7 +201,7 @@ class Cluster
       end
     end
 
-    return nodes.map.with_index, ansible_groups_provision
+    return nodes, ansible_groups_provision
   end
 
 end 
