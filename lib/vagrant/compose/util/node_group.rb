@@ -34,7 +34,7 @@ module VagrantPlugins
           boxname        = "#{cluster_name}-#{generate(:boxname, @boxname, node_index)}" 
           hostname       = "#{cluster_name}-#{generate(:hostname, @hostname, node_index)}" 
           aliases        = generate(:aliases, @aliases, node_index).join(',')
-          fqdn           = cluster_domain.empty? "#{hostname}" : "#{hostname}.#{cluster_domain}"
+          fqdn           = cluster_domain.empty? ? "#{hostname}" : "#{hostname}.#{cluster_domain}"
           ip             = generate(:ip, @ip, node_index)
           cpus           = generate(:cpus, @cpus, node_index)
           memory         = generate(:memory, @memory, node_index) 

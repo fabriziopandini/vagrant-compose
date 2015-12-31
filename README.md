@@ -391,7 +391,7 @@ For instance, when building a [Consul](https://consul.io/) cluster, all the `con
 ``` ruby
 config.cluster.compose('test') do |c|
   ...
-  c.context_vars['consul-server'] = lambda { |context, nodes| 
+  c.ansible_context_vars['consul-server'] = lambda { |context, nodes| 
     return { 'consul-serverIPs' => nodes.map { |n| n.ip }.to_a } 
   }
   ...
@@ -403,10 +403,10 @@ Then, you can use the above context var when generating group_vars for nodes in 
 ``` ruby
 config.cluster.compose('test') do |c|
   ...
-  c.context_vars['consul-server'] = lambda { |context, nodes| 
+  c.ansible_context_vars['consul-server'] = lambda { |context, nodes| 
     return { 'serverIPs' => nodes.map { |n| n.ip }.to_a } 
   }
-  c.group_vars['consul-agent'] = lambda { |context, nodes| 
+  c.ansible_group_vars['consul-agent'] = lambda { |context, nodes| 
     return { 'consul_joins' => context['consul-serverIPs']  } 
   }
   ...
