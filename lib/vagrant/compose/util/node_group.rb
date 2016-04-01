@@ -31,8 +31,10 @@ module VagrantPlugins
         node_index = 0
         while node_index < @instances
           box            = generate(:box, @box, node_index) 
-          boxname        = "#{cluster_name}-#{generate(:boxname, @boxname, node_index)}" 
-          hostname       = "#{cluster_name}-#{generate(:hostname, @hostname, node_index)}" 
+          boxname        = maybe_prefix(cluster_name,
+                                        "#{generate(:boxname, @boxname, node_index)}")
+          hostname       = maybe_prefix(cluster_name,
+                                        "#{generate(:hostname, @hostname, node_index)}")
           aliases        = generate(:aliases, @aliases, node_index).join(',')
           fqdn           = cluster_domain.empty? ? "#{hostname}" : "#{hostname}.#{cluster_domain}"
           ip             = generate(:ip, @ip, node_index)
@@ -43,6 +45,14 @@ module VagrantPlugins
           yield Node.new(box, boxname, hostname, fqdn, aliases, ip, cpus, memory, ansible_groups, attributes, cluster_offset + node_index, node_index)
 
           node_index += 1
+        end
+      end
+
+      def maybe_prefix(cluster_name, name)
+        if cluster_name && cluster_name.length > 0
+          "#{cluster_name}-" + name
+        else
+          name
         end
       end
 
