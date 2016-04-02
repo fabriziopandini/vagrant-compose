@@ -12,5 +12,5 @@ other changes:
 * Improved documentation.
 * cluster domain now is optional
 * nodes code block now is optional
-* improved detection of 
+* improved detection of multimachine_filter
 * minor fix
