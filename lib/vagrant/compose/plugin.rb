@@ -15,7 +15,8 @@ module VagrantPlugins
     class Plugin < Vagrant.plugin("2")
       name "Compose"
       description <<-DESC
-      This plugin installs ...
+      A Vagrant plugin that helps building complex multi-machine scenarios.
+      see https://github.com/fabriziopandini/vagrant-compose for documentation.
       DESC
 
       config "cluster" do

@@ -4,17 +4,39 @@ require_relative "node_group"
 module VagrantPlugins
   module Compose
 
-    # Definisce un cluster, ovvero l'insieme di 1..n gruppi di nodi con caratteristiche simili.
+    # This class defines a cluster, thas is a set of group of nodes, where nodes in each group has similar characteristics.
+    # Basically, a cluster is a data structure that can be used as a recipe for setting up and provisioning a 
+    # vagrant cluster composed by several machines with different roles.
     class Cluster
 
+      # The name of the cluster
       attr_reader   :name
-      attr_reader   :multimachine_filter
+
+      # The default vagrant base box to be used for creating vagrant machines in this cluster. 
+      # This setting can be changed at group/node level
       attr_accessor :box
+      
+      # The network domain to wich the cluster belongs (used for computing nodes fqdn)
       attr_accessor :domain
+      
+
+      # The root path for ansible playbook; it is used as a base path for computing ansible_group_vars and ansible_host_vars
+      # It defaults to current directory/provisioning
       attr_accessor :ansible_playbook_path
-      attr_accessor :ansible_context_vars
+      
+      # The path where ansible group vars files are stores.
+      # It default to ansible_playbook_path/group_vars
       attr_accessor :ansible_group_vars
+      
+      # The path where ansible group vars files are stores.
+      # It default to ansible_playbook_path/host_vars
       attr_accessor :ansible_host_vars
+
+      # A dictionary, allowing to setup context vars to be uses is value_generators when composing nodes
+      attr_accessor :ansible_context_vars
+
+      # A variable that reflects if vagrant is tageting a single machine, like f.i. when executing vagrant up machine-name
+      attr_reader   :multimachine_filter
 
       # Costruttore di una istanza di cluster.
       def initialize(name)
@@ -25,6 +47,8 @@ module VagrantPlugins
         @ansible_host_vars     = {}
         @multimachine_filter   = ""
         @ansible_playbook_path = File.join(Dir.pwd, 'provisioning')
+        @ansible_group_vars_path = File.join(@ansible_playbook_path, 'group_vars')
+        @ansible_host_vars_path = File.join(@ansible_playbook_path, 'host_vars')
 
         @name        = name 
         @box         = 'ubuntu/trusty64'
@@ -129,8 +153,6 @@ module VagrantPlugins
         end
 
         # cleanup ansible_group_vars files
-        # TODO: make variable public
-        @ansible_group_vars_path = File.join(@ansible_playbook_path, 'group_vars')
         # TODO: make safe
         FileUtils.mkdir_p(@ansible_group_vars_path) unless File.exists?(@ansible_group_vars_path)
         Dir.foreach(@ansible_group_vars_path) {|f| fn = File.join(@ansible_group_vars_path, f); File.delete(fn) if f.end_with?(".yml")}
@@ -166,8 +188,6 @@ module VagrantPlugins
         end
 
         # cleanup ansible_host_vars files (NB. 1 nodo = 1 host)
-        # TODO: make variable public
-        @ansible_host_vars_path = File.join(@ansible_playbook_path, 'host_vars')
         # TODO: make safe
         FileUtils.mkdir_p(@ansible_host_vars_path) unless File.exists?(@ansible_host_vars_path)
         Dir.foreach(@ansible_host_vars_path) {|f| fn = File.join(@ansible_host_vars_path, f); File.delete(fn) if f.end_with?(".yml")}

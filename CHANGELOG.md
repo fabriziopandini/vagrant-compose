@@ -2,7 +2,8 @@
 
 * Initial release.
 
-# 0.2.x (December 31, 2015)
+
+# 0.2.2 (December 31, 2015)
 
 breaking changes! 
 * nodes instances number defined into node method (instances attributes removed)
@@ -13,4 +14,12 @@ other changes:
 * cluster domain now is optional
 * nodes code block now is optional
 * improved detection of multimachine_filter
-* minor fix
+* minor fixes
+
+# 0.2.3 (April 2, 2016)
+
+* Now custer name can be omitted (thanks to jaydoane)
+
+other changes:
+* Documented cluster.debug feature
+* Improved code inline documentation
