@@ -82,7 +82,7 @@ module VagrantPlugins
       # Prepara il provisioning del cluster
       def compose 
 
-        @multimachine_filter =  ARGV.length > 1 ? ARGV[1] : "" # detect if running vagrant up/provision MACHINE
+        @multimachine_filter = (['up', 'provision'].include? ARGV[0] && ARGV.length > 1) ? ARGV[1] : "" # detect if running vagrant up/provision MACHINE
 
         ## Fase1: Creazione dei nodi
 
