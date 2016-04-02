@@ -5,7 +5,6 @@ require "vagrant/compose/plugin"
 module VagrantPlugins
   module Compose
     lib_path = Pathname.new(File.expand_path("../compose", __FILE__))
-
     autoload :Errors, lib_path.join("errors")
 
     # This returns the path to the source of this plugin.

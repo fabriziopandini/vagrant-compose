@@ -2,7 +2,10 @@ require "vagrant"
 
 module VagrantPlugins
   module Compose
+
+    #Plugin custom error classes, handling localization of error messages
     module Errors
+      #Base class for vagrant compose custom errors
       class VagrantComposeError < Vagrant::Errors::VagrantError
         error_namespace("vagrant_compose.errors")
       end
