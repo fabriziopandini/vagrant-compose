@@ -85,7 +85,9 @@ See following chapters for more details.
 
 ## Configuring the cluster
 
-There are several options to customise the cluster definition.
+Each cluster can be named passing a value to `cluster.compose` method, and the default behaviour is that name of vagrant boxes and hostnames will be prefixed by such name; if cluster name will be set to nil or "", vagrant boxes and hostnames will be composed without prefix.
+
+Apart for cluster name, there are several options to customize the cluster definition.
 
 ### Defining cluster attributes
 
@@ -96,7 +98,7 @@ You can set set cluster attributes in the block of code that is passed as a seco
 ``` ruby
 config.cluster.compose('test') do |c|
   c.box = "centos/7"    
-  ...	
+  ... 
 end
 ```
 
@@ -104,7 +106,7 @@ Following cluster attributes are available:
 
 - **box**, [String], default = 'ubuntu/trusty64'
   
-  Sets the base box for nodes, a.k.a the image that will be used to spin up the machine; please note that the base box can be customised also for each set of nodes (see Defining set of nodes).
+  Sets the base box for nodes, a.k.a the image that will be used to spin up the machine; please note that the base box can be customized also for each set of nodes (see Defining set of nodes).
 
 
 - **domain**, [String], default = 'vagrant'
@@ -125,12 +127,12 @@ Set of nodes can be defined in the block of code that is passed as a second para
 ``` ruby
 config.cluster.compose('test') do |c|
   ...
-  c.nodes(3, 'zookeeper')
-  ...	
+  c.nodes(3, 'consul-agents')
+  ... 
 end
 ```
 
-The first parameter of the `nodes` method is the number of nodes in the set, while the second parameter is the name of the set; `nodes` accepts an optional third parameter, allowing to define a block of code where it is possible to customise several attributes of the set of nodes itself: 
+The first parameter of the `nodes` method is the number of nodes in the set, while the second parameter is the name of the set; `nodes` accepts an optional third parameter, allowing to define a block of code where it is possible to customize several attributes of the set of nodes itself: 
 
 ``` ruby
 config.cluster.compose('test') do |c|
@@ -138,7 +140,7 @@ config.cluster.compose('test') do |c|
   c.nodes(3, 'zookeeper') do |n|
     n.box = "centos/7"
   end      
-  ...	
+  ... 
 end
 ```
 
@@ -159,8 +161,6 @@ Please note that all the available attributes can be set to:
     return "#{group_name}#{node_index + 1}" 
   }
   ```
-  
-  ​
 
 Following set of nodes attributes are available:
 
@@ -171,15 +171,13 @@ Following set of nodes attributes are available:
 - **boxname**, [String|String_Generator], default = `"#{group_name}#{node_index + 1}"`
   
   Sets the box name (a.k.a. the name of the machine in VirtualBox/VMware)  for each node in this set.
-  
-  Note: when generating nodes, the resulting boxname will be automatically prefixed by `"#{cluster_name}-"`.
+  Note: when generating nodes, if cluster name not equals to nil or empty string the resulting boxname will be automatically prefixed by `"#{cluster_name}-"` if cluster name not equals to nil or empty string.
   
 - **hostname**, [String|String_Generator], default = `"#{group_name}#{node_index + 1}"`
   
   Sets the hostname for each node in this set. 
   
-  Note: when generating nodes, the resulting hostname will be automatically prefixed by `"#{cluster_name}-"`; additionally the **fqdn** attribute will be computed by concatenating `".#{cluster.domain}"`, if defined (if `domain` is not defined, fqdn will be the same of hostname).
-
+  Note: when generating nodes, if cluster name not equals to nil or empty string the resulting hostname will be automatically prefixed by `"#{cluster_name}-"`; additionally the **fqdn** attribute will be computed by concatenating `".#{cluster.domain}"`, if defined (if `domain` is not defined, fqdn will be the same of hostname).
 
 - **aliases**, [Array(String)|Array(String)_Generator], default = `[]`
   
@@ -187,25 +185,21 @@ Following set of nodes attributes are available:
   
   Note: when generating nodes, aliases will be automatically concatenated into a string, comma separated.
 
-
 - **ip**, [String|String_Generator], default = `"172.31.#{group_index}.#{100 + node_index + 1}"`
   
   Sets the ip for for each node in this set. 
-
 
 - **cpus**, [Integer|Integer_Generator], default = `1`
   
   Sets the number of cpus for each node in this set. 
 
-
 - **memory**, [Integer|Integer_Generator], default = `256` (MB)
   
   Sets the memory allocated for each node in this set. 
 
-
 - **attributes**, [Hash(String, obj)|Hash(String, obj)_Generator], default = `{}`
   
-  Allows to provide customisable additional attributes for each node in this set. 
+  Allows to provide custom additional attributes for each node in this set. 
 
 > Please note that some attribute, like boxname, hostname, ip, *must* be different for each node in the set (and in the cluster).
 > 
@@ -221,28 +215,33 @@ The resulting list of nodes is stored in the `config.cluster.nodes` variable; ea
 - **boxname**
 - **hostname**
 - **fqdn**
-
-
 - **aliases**
-
-
 - **ip**
-
-
 - **cpus**
-
-
 - **memory**
-
-
 - **attributes**
-
-
 
 Two additional attributes will be automatically set for each node:
 
 - **index**, [integer (zero based)], uniquely assigned to each node in the cluster
 - **group_index**, [integer (zero based)], uniquely assigned to each node in a set of nodes
+
+## Checking cluster configuration
+
+It is possible to check the resulting list of nodes by using the `compose.debug` command:
+
+``` ruby
+Vagrant.configure(2) do |config|
+  #cluster definition
+  config.cluster.compose('test') do |c|
+    ...
+  end
+  
+  config.cluster.debug
+end
+```
+
+Main information about nodes will be printed into the sequence of vagrant messages.
 
 ## Creating nodes 
 
@@ -380,11 +379,8 @@ Ansible host vars will be stored into yaml files saved into `{cluster.ansible_pl
 
 Group vars and host var generation by design can operate only with the set of information that comes with a groups of nodes or a single node.
 
-However, sometimes, it is necessary to share some information across group of nodes, like for instance providing information about zookeeper nodes to mesos master nodes.
-
+However, sometimes, it is necessary to share some information across group of nodes.
 This can be achieved by setting one or more context_vars generator for each ansible_groups.
-
-> Context_vars generator are always executed before group_vars and host_vars generators; the resulting context, is given in input to group_vars and host_vars generators.
 
 For instance, when building a [Consul](https://consul.io/) cluster, all the `consul-agent` nodes should be configured with the ip - the list of ip - to be used when joining the cluster; such list can be generated from the list of nodes in the `consul-server` set of nodes, and stored in a context_vars:
 
@@ -397,6 +393,8 @@ config.cluster.compose('test') do |c|
   ...
 end
 ```
+
+> Context_vars generator are always executed before group_vars and host_vars generators; the resulting context, is given in input to group_vars and host_vars generators.
 
 Then, you can use the above context var when generating group_vars for nodes in the `consul-agent` group.
 
@@ -436,3 +434,9 @@ end
 
 ```
 
+# Additional notes
+Vagrant compose will play nicely with all vagrant commands.
+
+For instance, When using vagrant tageting a single machine, like f.i. `vagrant up mesos-master1`, the `cluster.ansible_groups` variable will include only the given machine.
+
+Happy vagrant-compose!
