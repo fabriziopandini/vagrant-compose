@@ -78,7 +78,7 @@ module VagrantPlugins
       # Prepara il provisioning del cluster
       def compose
 
-        @multimachine_filter = (['up', 'provision'].include? ARGV[0] && ARGV.length > 1) ? ARGV[1] : "" # detect if running vagrant up/provision MACHINE
+        @multimachine_filter = ((['up', 'provision'].include? ARGV[0]) && ARGV.length > 1) ? ARGV.drop(1) : [] # detect if running vagrant up/provision MACHINE
 
         ## Fase1: Creazione dei nodi
 
@@ -110,7 +110,7 @@ module VagrantPlugins
         ansible_groups.each do |ansible_group, ansible_group_nodes|
           ansible_groups_provision[ansible_group] = []
           ansible_group_nodes.each do |node|
-            ansible_groups_provision[ansible_group] << node.hostname if @multimachine_filter.empty? or @multimachine_filter == node.boxname #filter ansible groups if vagrant command on one node
+            ansible_groups_provision[ansible_group] << node.hostname if checkMultimachineFilter(node.boxname) #filter ansible groups if vagrant command on one node
           end
         end
         ansible_groups_provision['all_groups:children'] = ansible_groups.keys
@@ -227,6 +227,27 @@ module VagrantPlugins
 
         return nodes, ansible_groups_provision
       end
+
+      def checkMultimachineFilter(boxname) 
+        if @multimachine_filter.length > 0
+            @multimachine_filter.each do |name|
+            if pattern = name[/^\/(.+?)\/$/, 1]
+              # This is a regular expression name, so we convert to a regular
+              # expression and allow that sort of matching.
+              regex = Regexp.new(pattern)
+              return boxname =~ regex
+            else
+              # String name, just look for a specific VM
+              return boxname == name
+            end
+          end
+        else
+          # No name was given, so we return every VM in the order
+          # configured.
+          return true
+        end  
+      end
+
     end
 
   end
