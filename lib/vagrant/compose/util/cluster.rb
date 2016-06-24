@@ -25,13 +25,13 @@ module VagrantPlugins
       attr_accessor :ansible_playbook_path
 
       # A dictionary, allowing to setup ansible_group_vars generators foreach node_group
-      attr_accessor :ansible_group_vars
+      attr_reader :ansible_group_vars
 
       # A dictionary, allowing to setup ansible_host_vars generators foreach node_group
-      attr_accessor :ansible_host_vars
+      attr_reader :ansible_host_vars
 
       # A dictionary, allowing to setup context vars to be uses is value_generators when composing nodes
-      attr_accessor :ansible_context_vars
+      attr_reader :ansible_context_vars
 
       # A variable that reflects if vagrant is tageting a single machine, like f.i. when executing vagrant up machine-name
       attr_reader   :multimachine_filter
@@ -126,10 +126,8 @@ module VagrantPlugins
 
         context = {}
 
-        puts "==> computing group vars"
         #genearazione context (NB. 1 group = 1 gruppo host ansible)
         ansible_groups.each do |ansible_group, ansible_group_nodes|
-          puts "==> computing group vars for #{ansible_group}"
           # genero le variabili per il group
           provisioners = @ansible_context_vars[ansible_group]
           unless provisioners.nil?
