@@ -23,3 +23,11 @@ other changes:
 other changes:
 * Documented cluster.debug feature
 * Improved code inline documentation
+
+# 0.2.4 (June 26, 2016)
+
+* issues #3 Now vagrant up and vagrant provision support also a list of machine name / regular expressions.
+* pr #3 Support changing ansible_playbook_path & clean up   path management
+
+NB. breaking change
+ansible_group_vars_path and ansible_host_vars_path are not supported anymore
