@@ -1,5 +1,5 @@
-module Vagrant	
+module Vagrant
   module Compose
-    VERSION = "0.2.3"
+    VERSION = "0.7.0"
   end
 end
