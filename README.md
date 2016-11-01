@@ -33,13 +33,13 @@ Vagrant-compose supports two appraches for definining a cluster of VMs.
 
   Cluster are defined by using the some ruby knowledge that is required for writing Vagrantfiles.
 
-  see [Programmatic Approach](http://pippo) for more details.
+  see [Programmatic Approach](https://github.com/fabriziopandini/vagrant-compose/blob/master/doc/programmatic.md) for more details.
 
 - Declarative Approach
 
   By using the declarative approach also people with limited programming background can use vagrant-compose to easily define a cluster composed by many VMs; with declarative approach,  the definition of the cluster is done in yaml, and the ruby programming part within the Vagrantfile is reduced to the minimum.
 
-  see [Declarative Approach](http://pippo) for more details.
+  see [Declarative Approach](https://github.com/fabriziopandini/vagrant-compose/blob/master/doc/declarative.md) for more details.
 
 # Additional notes
 Vagrant compose will play nicely with all vagrant commands.
