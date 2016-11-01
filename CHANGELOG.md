@@ -5,7 +5,7 @@
 
 # 0.2.2 (December 31, 2015)
 
-breaking changes! 
+breaking changes!
 * nodes instances number defined into node method (instances attributes removed)
 * cluster.nodes return only nodes (before nodes with index were returned)
 
@@ -31,3 +31,7 @@ other changes:
 
 NB. breaking change
 ansible_group_vars_path and ansible_host_vars_path are not supported anymore
+
+# 0.7.0 (November 02, 2016)
+
+* introduced support for declarative cluster definition

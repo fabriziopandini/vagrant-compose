@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
   spec.authors       = ["Fabrizio Pandini"]
   spec.email         = ["fabrizio.pandini@unicredit.eu"]
-  spec.homepage      = "https://github.com/fabriziopandini/vagrant-compose/"  
+  spec.homepage      = "https://github.com/fabriziopandini/vagrant-compose/"
   spec.summary       = %q{A Vagrant plugin that helps building complex multi-machine scenarios.}
   spec.description   = %q{A Vagrant plugin that helps building complex multi-machine scenarios.}
 
@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.4.2"
   spec.add_development_dependency "rspec", "~> 3.4.0"
   spec.add_development_dependency "rspec-its", "~> 1.2.0"
+  spec.add_dependency "open4", "~> 1.3.4"
 
   # The following block of code determines the files that should be included
   # in the gem. It does this by reading all the files in the directory where
@@ -48,7 +49,7 @@ Gem::Specification.new do |spec|
         File.fnmatch(ignore, File.basename(file), File::FNM_PATHNAME)
     end
   end
- 
+
   spec.files         = unignored_files
   spec.executables   = unignored_files.map { |f| f[/^bin\/(.*)/, 1] }.compact
   spec.require_path  = 'lib'

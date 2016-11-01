@@ -29,6 +29,14 @@ module VagrantPlugins
       class HostVarExpressionError < VagrantComposeError
         error_key(:host_var_expression_error)
       end
+
+      class PyComposeMissing < VagrantComposeError
+        error_key(:pycompose_missing)
+      end
+
+      class PyComposeError < VagrantComposeError
+        error_key(:pycompose_error)
+      end
     end
   end
 end
