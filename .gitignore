@@ -17,4 +17,4 @@ Vagrantfile
 
 # Test
 provisioning
-declarative.yaml
+*.yaml

@@ -35,3 +35,8 @@ ansible_group_vars_path and ansible_host_vars_path are not supported anymore
 # 0.7.0 (November 02, 2016)
 
 * introduced support for declarative cluster definition
+
+# 0.7.1 (November 04, 2016)
+
+* Minor fix
+
