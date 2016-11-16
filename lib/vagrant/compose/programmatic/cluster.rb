@@ -94,6 +94,7 @@ module VagrantPlugins
               ansible_groups[ansible_group] << node
             end
           end
+          extended_ansible_groups = ansible_groups.merge({'all_groups:children' => nodes})
 
           ## Fase2: Configurazione provisioning del cluster via Ansible
           # Ogni nodo diventerà una vm su cui sarà fatto il provisioning, ovvero un host nell'inventory di ansible
@@ -120,7 +121,7 @@ module VagrantPlugins
           context = {}
 
           #genearazione context (NB. 1 group = 1 gruppo host ansible)
-          ansible_groups.each do |ansible_group, ansible_group_nodes|
+          extended_ansible_groups.each do |ansible_group, ansible_group_nodes|
             # genero le variabili per il group
             provisioners = @ansible_context_vars[ansible_group]
             unless provisioners.nil?
@@ -145,11 +146,12 @@ module VagrantPlugins
           # TODO: make safe
           ansible_group_vars_path = File.join(@ansible_playbook_path, 'group_vars')
 
-          FileUtils.mkdir_p(ansible_group_vars_path) unless File.exists?(ansible_group_vars_path)
-          Dir.foreach(ansible_group_vars_path) {|f| fn = File.join(ansible_group_vars_path, f); File.delete(fn) if f.end_with?(".yml")}
+          if File.exists?(ansible_group_vars_path)
+            Dir.foreach(ansible_group_vars_path) {|f| fn = File.join(ansible_group_vars_path, f); File.delete(fn) if f.end_with?(".yml")}
+          end
 
           #generazione ansible_group_vars file (NB. 1 group = 1 gruppo host ansible)
-          ansible_groups.each do |ansible_group, ansible_group_nodes|
+          extended_ansible_groups.each do |ansible_group, ansible_group_nodes|
             ansible_group_vars = {}
             # genero le variabili per il group
             provisioners = @ansible_group_vars[ansible_group]
@@ -171,8 +173,11 @@ module VagrantPlugins
 
             # crea il file (se sono state generate delle variabili)
             unless ansible_group_vars.empty?
+              FileUtils.mkdir_p(ansible_group_vars_path) unless File.exists?(ansible_group_vars_path)
+
               # TODO: make safe
-              File.open(File.join(ansible_group_vars_path,"#{ansible_group}.yml") , 'w+') do |file|
+              fileName = ansible_group.gsub(':', '_')
+              File.open(File.join(ansible_group_vars_path,"#{fileName}.yml") , 'w+') do |file|
                 file.puts YAML::dump(ansible_group_vars)
               end
             end
@@ -182,8 +187,9 @@ module VagrantPlugins
           # TODO: make safe
           ansible_host_vars_path = File.join(@ansible_playbook_path, 'host_vars')
 
-          FileUtils.mkdir_p(ansible_host_vars_path) unless File.exists?(ansible_host_vars_path)
-          Dir.foreach(ansible_host_vars_path) {|f| fn = File.join(ansible_host_vars_path, f); File.delete(fn) if f.end_with?(".yml")}
+          if File.exists?(ansible_host_vars_path)
+            Dir.foreach(ansible_host_vars_path) {|f| fn = File.join(ansible_host_vars_path, f); File.delete(fn) if f.end_with?(".yml")}
+          end 
 
           #generazione ansible_host_vars file
           nodes.each do |node|
@@ -211,6 +217,8 @@ module VagrantPlugins
 
             # crea il file (se sono state generate delle variabili)
             unless ansible_host_vars.empty?
+              FileUtils.mkdir_p(ansible_host_vars_path) unless File.exists?(ansible_host_vars_path)
+
               # TODO: make safe
               File.open(File.join(ansible_host_vars_path,"#{node.hostname}.yml") , 'w+') do |file|
                 file.puts YAML::dump(ansible_host_vars)

@@ -302,9 +302,9 @@ end
 
 As you can see, `consul` and `docker` ansible_groups now include both nodes from `consul-agent` and `load-balancer` node set; vice versa, other groups like `registrator`, `consul-template`, `nginx` contain node only from one of the two nodes set.
 
-Ansible playbook can leverage on groups for providing machines with the required software stacks.
+Ansible playbook can additionally leverage on groups for providing machines with the required software stacks.
 
-NB. you can see resulting ansible_groups by using `debug` command with `verbose` equal to `true`.
+> NB. you can see resulting ansible_groups by using `debug` command with `verbose` equal to `true`.
 
 ### Defining group vars
 
@@ -324,6 +324,18 @@ config.cluster.compose('test') do |c|
   ...
   c.ansible_group_vars['consul-server'] = lambda { |context, nodes|
     return { 'consul_bootstrap_expect' => nodes.length }
+  }
+  ...
+end
+```
+
+Additionally, it is possible to set variables for all groups/all hosts, by setting vars for the pre-defined `all_groups:children` group of groups:
+
+``` ruby
+config.cluster.compose('test') do |c|
+  ...
+  c.ansible_group_vars['all_groups:childrenr'] = lambda { |context, nodes|
+    return { 'var0' => nodes.length }
   }
   ...
 end
@@ -378,6 +390,8 @@ end
 ```
 
 > Context_vars generator are always executed before group_vars and host_vars generators; the resulting context, is given in input to group_vars and host_vars generators.
+
+> In addition to context vars for groups, it is possible to create context_vars for all groups/all hosts, by setting vars for the pre-defined `all_groups:children` group of groups; in this case, intuitively, the list of nodes whitin the context contains all the nodes.
 
 Then, you can use the above context var when generating group_vars for nodes in the `consul-agent` group.
 

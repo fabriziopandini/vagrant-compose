@@ -74,16 +74,19 @@ module VagrantPlugins
             # TODO: make safe
             ansible_group_vars_path = File.join(@ansible_playbook_path, 'group_vars')
 
-            FileUtils.mkdir_p(ansible_group_vars_path) unless File.exists?(ansible_group_vars_path)
-            Dir.foreach(ansible_group_vars_path) {|f| fn = File.join(ansible_group_vars_path, f); File.delete(fn) if f.end_with?(".yml")}
+            if File.exists?(ansible_group_vars_path)
+              Dir.foreach(ansible_group_vars_path) {|f| fn = File.join(ansible_group_vars_path, f); File.delete(fn) if f.end_with?(".yml")}
+            end
 
             #generazione ansible_group_vars file (NB. 1 group = 1 gruppo host ansible)
             if ansible.key?("group_vars")
               ansible['group_vars'].each do |group, vars|
                 # crea il file (se sono state generate delle variabili)
                 unless vars.empty?
+                  FileUtils.mkdir_p(ansible_group_vars_path) unless File.exists?(ansible_group_vars_path)
                   # TODO: make safe
-                  File.open(File.join(ansible_group_vars_path,"#{group}.yml") , 'w+') do |file|
+                  fileName = group.gsub(':', '_')
+                  File.open(File.join(ansible_group_vars_path,"#{fileName}.yml") , 'w+') do |file|
                     file.puts YAML::dump(vars)
                   end
                 end
@@ -94,14 +97,17 @@ module VagrantPlugins
             # TODO: make safe
             ansible_host_vars_path = File.join(@ansible_playbook_path, 'host_vars')
 
-            FileUtils.mkdir_p(ansible_host_vars_path) unless File.exists?(ansible_host_vars_path)
-            Dir.foreach(ansible_host_vars_path) {|f| fn = File.join(ansible_host_vars_path, f); File.delete(fn) if f.end_with?(".yml")}
+            if File.exists?(ansible_host_vars_path)
+              Dir.foreach(ansible_host_vars_path) {|f| fn = File.join(ansible_host_vars_path, f); File.delete(fn) if f.end_with?(".yml")}
+            end
 
             #generazione ansible_host_vars file 
             if ansible.key?("host_vars")
               ansible['host_vars'].each do |host, vars|
                 # crea il file (se sono state generate delle variabili)
                 unless vars.empty?
+                  FileUtils.mkdir_p(ansible_host_vars_path) unless File.exists?(ansible_host_vars_path)
+                  
                   # TODO: make safe
                   File.open(File.join(ansible_host_vars_path,"#{host}.yml") , 'w+') do |file|
                     file.puts YAML::dump(vars)
