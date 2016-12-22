@@ -295,9 +295,9 @@ kubernetes:
     ...
   ...
   ansible_group_vars:
-    etcd :
+    etcd:
       var1: ...
-    docker :
+    docker:
       var2: ...
       var3: ...
   ...
@@ -307,6 +307,17 @@ Group vars can be set to literal value or to Jinja2 value generators, that will 
 
 - **context_vars** see below
 - **nodes**, list of nodes in the ansible_group to which the group_vars belong
+
+Additionally it is possible to set variables for all groups/all hosts, by setting vars for the pre-defined `all` group of groups:
+
+```yaml
+kubernetes:
+  ...
+  ansible_group_vars:
+    all:
+      var1: ...
+  ...
+```
 
 Ansible group vars will be stored into yaml files saved into `{cluster.ansible_playbook_path}\group_vars` folder.
 
@@ -384,18 +395,42 @@ Context vars can be set to literal value or to Jinja2 value generators, that wil
 
 - nodes, list of nodes in the ansible_group to which the group_vars belong
 
-
 > Context_vars generator are always executed before group_vars and host_vars generators; the resulting context, is given in input to group_vars and host_vars generators.
 
+> In addition to context vars for groups, it is possible to create context_vars for all groups/all hosts, by setting vars for the pre-defined `all` group of groups; in this case, intuitively, the list of nodes whitin the context contains all the nodes.
+
 Then, you can use the above context var when generating group_vars for host vars.
+
+```yaml
+kubernetes:
+  box: centos/7
+  master:
+    ...
+    ansible_groups:
+      - kb8-master
+  minions:
+    ...
+    ansible_groups:
+      - kb8-minions
+
+  ansible_context_vars:
+    all:
+      var0: "{{ nodes | count }}"
+    kb8-master:
+      var1: "{{ nodes | count }}"
+
+  ansible_group_vars:
+    all:
+      var0_from_context: "{{ context['var0'] }}"
+    kb8-master:
+      var1_from_context: "{{ context['var1'] }}"
+```
 
 ### Group of groups
 
 A useful ansible inventory feature is [group of groups](http://docs.ansible.com/ansible/intro_inventory.html#hosts-and-groups).
 
-By default vagrant-compose will generate a group named `[all_groups:children]` with all the ansible_groups defined in cluster configuration; however:
-- you cannot rename all_groups
-- you cannot exclude any ansible group from all_groups.
+By default ansible has a group named `[all]` with all nodes in the cluster.
 
 If you need higher control on groups of groups you can simply add a new item to the variable `config.cluster.ansible_groups` before creating nodes.
 
