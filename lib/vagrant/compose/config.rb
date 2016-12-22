@@ -62,8 +62,6 @@ module VagrantPlugins
           end
         end
 
-        ansible_groups['all_groups:children'] = ansible_groups.keys
-
         return ansible_groups
       end
 

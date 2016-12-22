@@ -94,7 +94,7 @@ module VagrantPlugins
               ansible_groups[ansible_group] << node
             end
           end
-          extended_ansible_groups = ansible_groups.merge({'all_groups:children' => nodes})
+          extended_ansible_groups = ansible_groups.merge({'all' => nodes})
 
           ## Fase2: Configurazione provisioning del cluster via Ansible
           # Ogni nodo diventerà una vm su cui sarà fatto il provisioning, ovvero un host nell'inventory di ansible

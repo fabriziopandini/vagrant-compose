@@ -40,8 +40,9 @@ ansible_group_vars_path and ansible_host_vars_path are not supported anymore
 
 * Minor fix
 
-# 0.8.0 (November 16, 2016)
+# 0.7.2 (November 16, 2016)
 
 * issues #11 Allow management of Ansible vars for all hosts
 * issues #9 Create group_vars and host_vars directory only if necessary
 
+* breacking change: custom group of groups all_groups:children removed. Insteal use all (automatically created by ansible)
