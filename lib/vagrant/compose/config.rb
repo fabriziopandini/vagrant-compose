@@ -112,7 +112,7 @@ module VagrantPlugins
             puts "     group_index    #{node.group_index}"
           end
 
-          filter = " (NB. filtered by #{@cluster.multimachine_filter})" if not @multimachine_filter.empty?
+          filter = " (NB. filtered by #{@multimachine_filter})" if not @multimachine_filter.empty?
           puts ""
           puts "- ansible_groups #{filter}"
 
