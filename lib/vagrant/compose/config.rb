@@ -22,7 +22,7 @@ module VagrantPlugins
         @cluster = nil
     		@nodes = {}
         @ansible_groups ={}
-        @multimachine_filter = ((['up', 'provision'].include? ARGV[0]) && ARGV.length > 1 && !ARGV[1].start_with?('-')) ? ARGV.drop(1) : [] # detect if running vagrant up/provision MACHINE
+        @multimachine_filter = getMultimachine_filter() # detect if running vagrant up/provision MACHINE
   	  end
 
   	  # Implements cluster creation, through the execution of the give code.
@@ -126,6 +126,56 @@ module VagrantPlugins
         end
         puts ""
    	  end
+
+      def getMultimachine_filter
+        args = OptionParser.new do |o|
+          # Options for all commands with vmname
+          # vagrant/plugins/commands/destroy/command.rb
+          #   "-f", "--force"
+          # vagrant/plugins/commands/halt/command.rb
+          #   "-f", "--force"
+          # vagrant/plugins/commands/port/command.rb
+          #   "--guest PORT",
+          #   "--machine-readable"
+          # vagrant/plugins/commands/provision/command.rb
+          #   "--provision-with x,y,z"
+          # vagrant/plugins/commands/reload/command.rb
+          #   "--[no-]provision"
+          #   "--provision-with x,y,z"
+          # vagrant/plugins/commands/resume/command.rb
+          #   "--[no-]provision"
+          #   "--provision-with x,y,z"
+          # vagrant/plugins/commands/ssh/command.rb
+          #   "-c", "--command COMMAND"
+          #   "-p", "--plain"
+          # vagrant/plugins/commands/ssh_config/command.rb
+          #   "--host NAME"
+          # vagrant/plugins/commands/status/command.rb
+          # vagrant/plugins/commands/suspend/command.rb
+          # vagrant/plugins/commands/up/command.rb
+          #   "--[no-]destroy-on-error"
+          #   "--[no-]parallel"
+          #   "--provider PROVIDER"
+          #   "--[no-]install-provider"
+          #   "--[no-]provision"
+          #   "--provision-with x,y,z"
+
+          o.on("-f", "--force", "Destroy without confirmation.")
+          o.on("--guest PORT", "Output the host port that maps to the given guest port")
+          o.on("--machine-readable", "Display machine-readable output")
+          o.on("--provision-with x,y,z", Array, "Enable only certain provisioners, by type or by name.")
+          o.on("--[no-]provision", "Enable or disable provisioning")
+          o.on("-c", "--command COMMAND", "Execute an SSH command directly")
+          o.on("-p", "--plain", "Plain mode, leaves authentication up to user")
+          o.on("--host NAME", "Name the host for the config")
+          o.on("--[no-]destroy-on-error", "Destroy machine if any fatal error happens (default to true)")
+          o.on("--[no-]parallel", "Enable or disable parallelism if provider supports it")
+          o.on("--provider PROVIDER", String, "Back the machine with a specific provider")
+          o.on("--[no-]install-provider", "If possible, install the provider if it isn't installed")
+        end.permute! #Parses command line arguments argv in permutation mode and returns list of non-option arguments.
+
+        return args.length > 1 ? args.drop(1) : []
+      end
     end
   end
 end
