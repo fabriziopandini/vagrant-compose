@@ -17,17 +17,9 @@ module VagrantPlugins
         # The network domain to wich the cluster belongs (used for computing nodes fqdn)
         attr_accessor :domain
 
-        # A variable that reflects if vagrant is tageting a single machine, like f.i. when executing vagrant up machine-name
-        attr_reader   :multimachine_filter
-
         # The root path for ansible playbook; it is used as a base path for computing ansible_group_vars and ansible_host_vars
         # It defaults to current directory/provisioning
         attr_accessor :ansible_playbook_path
-
-        # Costruttore di una istanza di cluster.
-        def initialize()
-          @multimachine_filter = ""
-        end
 
         # Implements cluster creation from a playbook file
         def from (file)

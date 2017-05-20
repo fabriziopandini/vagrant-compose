@@ -39,7 +39,6 @@ module VagrantPlugins
           @ansible_context_vars  = {}
           @ansible_group_vars    = {}
           @ansible_host_vars     = {}
-          @multimachine_filter   = ""
           @ansible_playbook_path = File.join(Dir.pwd, 'provisioning')
 
           @name        = name

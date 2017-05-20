@@ -22,7 +22,7 @@ module VagrantPlugins
         @cluster = nil
     		@nodes = {}
         @ansible_groups ={}
-        @multimachine_filter = ((['up', 'provision'].include? ARGV[0]) && ARGV.length > 1) ? ARGV.drop(1) : [] # detect if running vagrant up/provision MACHINE
+        @multimachine_filter = ((['up', 'provision'].include? ARGV[0]) && ARGV.length > 1 && !ARGV[1].start_with?('-')) ? ARGV.drop(1) : [] # detect if running vagrant up/provision MACHINE
   	  end
 
   	  # Implements cluster creation, through the execution of the give code.
@@ -112,7 +112,7 @@ module VagrantPlugins
             puts "     group_index    #{node.group_index}"
           end
 
-          filter = " (NB. filtered by #{@cluster.multimachine_filter})" if not @multimachine_filter.empty?
+          filter = " (NB. filtered by #{@multimachine_filter})" if not @multimachine_filter.empty?
           puts ""
           puts "- ansible_groups #{filter}"
 
