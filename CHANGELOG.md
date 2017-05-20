@@ -45,4 +45,9 @@ ansible_group_vars_path and ansible_host_vars_path are not supported anymore
 * issues #11 Allow management of Ansible vars for all hosts
 * issues #9 Create group_vars and host_vars directory only if necessary
 
-* breacking change: custom group of groups all_groups:children removed. Insteal use all (automatically created by ansible)
+* breaking change: custom group of groups all_groups:children removed. Insteal use all (automatically created by ansible)
+
+# 0.7.3 (May 20, 2017)
+
+* PR Fix issue calling provision without filter #13 (now mutlimachine filter works properly even if mixed with other POSIX options)
+* breaking change: removed cluster.multimachine_filter property (use instead config.multimachine_filter)
