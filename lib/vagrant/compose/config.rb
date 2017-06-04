@@ -128,53 +128,63 @@ module VagrantPlugins
    	  end
 
       def getMultimachine_filter
-        args = OptionParser.new do |o|
-          # Options for all commands with vmname
-          # vagrant/plugins/commands/destroy/command.rb
-          #   "-f", "--force"
-          # vagrant/plugins/commands/halt/command.rb
-          #   "-f", "--force"
-          # vagrant/plugins/commands/port/command.rb
-          #   "--guest PORT",
-          #   "--machine-readable"
-          # vagrant/plugins/commands/provision/command.rb
-          #   "--provision-with x,y,z"
-          # vagrant/plugins/commands/reload/command.rb
-          #   "--[no-]provision"
-          #   "--provision-with x,y,z"
-          # vagrant/plugins/commands/resume/command.rb
-          #   "--[no-]provision"
-          #   "--provision-with x,y,z"
-          # vagrant/plugins/commands/ssh/command.rb
-          #   "-c", "--command COMMAND"
-          #   "-p", "--plain"
-          # vagrant/plugins/commands/ssh_config/command.rb
-          #   "--host NAME"
-          # vagrant/plugins/commands/status/command.rb
-          # vagrant/plugins/commands/suspend/command.rb
-          # vagrant/plugins/commands/up/command.rb
-          #   "--[no-]destroy-on-error"
-          #   "--[no-]parallel"
-          #   "--provider PROVIDER"
-          #   "--[no-]install-provider"
-          #   "--[no-]provision"
-          #   "--provision-with x,y,z"
+        if ARGV.length <= 1 
+          return []
+        # commands with vmname filter
+        elsif ["destroy", "halt", "port", "provision", 
+              "reload", "resume", "ssh", "ssh_config", 
+              "status", "suspend", "up"].include?(ARGV[0].downcase)
 
-          o.on("-f", "--force", "Destroy without confirmation.")
-          o.on("--guest PORT", "Output the host port that maps to the given guest port")
-          o.on("--machine-readable", "Display machine-readable output")
-          o.on("--provision-with x,y,z", Array, "Enable only certain provisioners, by type or by name.")
-          o.on("--[no-]provision", "Enable or disable provisioning")
-          o.on("-c", "--command COMMAND", "Execute an SSH command directly")
-          o.on("-p", "--plain", "Plain mode, leaves authentication up to user")
-          o.on("--host NAME", "Name the host for the config")
-          o.on("--[no-]destroy-on-error", "Destroy machine if any fatal error happens (default to true)")
-          o.on("--[no-]parallel", "Enable or disable parallelism if provider supports it")
-          o.on("--provider PROVIDER", String, "Back the machine with a specific provider")
-          o.on("--[no-]install-provider", "If possible, install the provider if it isn't installed")
-        end.permute! #Parses command line arguments argv in permutation mode and returns list of non-option arguments.
+          args = OptionParser.new do |o|
+            # Options for all commands with vmname
+            # vagrant/plugins/commands/destroy/command.rb
+            #   "-f", "--force"
+            # vagrant/plugins/commands/halt/command.rb
+            #   "-f", "--force"
+            # vagrant/plugins/commands/port/command.rb
+            #   "--guest PORT",
+            #   "--machine-readable"
+            # vagrant/plugins/commands/provision/command.rb
+            #   "--provision-with x,y,z"
+            # vagrant/plugins/commands/reload/command.rb
+            #   "--[no-]provision"
+            #   "--provision-with x,y,z"
+            # vagrant/plugins/commands/resume/command.rb
+            #   "--[no-]provision"
+            #   "--provision-with x,y,z"
+            # vagrant/plugins/commands/ssh/command.rb
+            #   "-c", "--command COMMAND"
+            #   "-p", "--plain"
+            # vagrant/plugins/commands/ssh_config/command.rb
+            #   "--host NAME"
+            # vagrant/plugins/commands/status/command.rb
+            # vagrant/plugins/commands/suspend/command.rb
+            # vagrant/plugins/commands/up/command.rb
+            #   "--[no-]destroy-on-error"
+            #   "--[no-]parallel"
+            #   "--provider PROVIDER"
+            #   "--[no-]install-provider"
+            #   "--[no-]provision"
+            #   "--provision-with x,y,z"
 
-        return args.length > 1 ? args.drop(1) : []
+            o.on("-f", "--force", "Destroy without confirmation.")
+            o.on("--guest PORT", "Output the host port that maps to the given guest port")
+            o.on("--machine-readable", "Display machine-readable output")
+            o.on("--provision-with x,y,z", Array, "Enable only certain provisioners, by type or by name.")
+            o.on("--[no-]provision", "Enable or disable provisioning")
+            o.on("-c", "--command COMMAND", "Execute an SSH command directly")
+            o.on("-p", "--plain", "Plain mode, leaves authentication up to user")
+            o.on("--host NAME", "Name the host for the config")
+            o.on("--[no-]destroy-on-error", "Destroy machine if any fatal error happens (default to true)")
+            o.on("--[no-]parallel", "Enable or disable parallelism if provider supports it")
+            o.on("--provider PROVIDER", String, "Back the machine with a specific provider")
+            o.on("--[no-]install-provider", "If possible, install the provider if it isn't installed")
+          end.permute! #Parses command line arguments argv in permutation mode and returns list of non-option arguments.
+
+          return args.length > 1 ? args.drop(1) : []
+        else
+          return []
+        end
       end
     end
   end
