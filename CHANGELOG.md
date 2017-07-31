@@ -1,3 +1,7 @@
+# 0.7.5 (May 20, 2017)
+
+* fix #15 can't make the alises to work (using Declarative Approach)
+
 # 0.7.4 (May 20, 2017)
 
 * fix multimachine_filter error with commands without vmname
