@@ -40,7 +40,7 @@ module VagrantPlugins
 
             box             = node[boxname]['box']
             hostname        = node[boxname]['hostname']
-            aliases         = node[boxname]['hostname']
+            aliases         = node[boxname]['aliases']
             fqdn            = node[boxname]['fqdn']
             ip              = node[boxname]['ip']
             cpus            = node[boxname]['cpus']
