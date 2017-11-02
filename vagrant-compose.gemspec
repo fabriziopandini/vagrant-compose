@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.platform      = Gem::Platform::RUBY
   spec.license       = "MIT"
   spec.authors       = ["Fabrizio Pandini"]
-  spec.email         = ["fabrizio.pandini@unicredit.eu"]
+  spec.email         = ["fabrizio.pandini@gmail.com"]
   spec.homepage      = "https://github.com/fabriziopandini/vagrant-compose/"
   spec.summary       = %q{A Vagrant plugin that helps building complex multi-machine scenarios.}
   spec.description   = %q{A Vagrant plugin that helps building complex multi-machine scenarios.}
